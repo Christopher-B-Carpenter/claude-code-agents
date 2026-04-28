@@ -1,0 +1,54 @@
+{
+  "name": "generic",
+  "description": "Generic web application - standard HTML/JavaScript patterns",
+  "selector_patterns": {
+    "button": ["button", "[role='button']", "input[type='submit']", "input[type='button']"],
+    "input": ["input[type='text']", "input[type='email']", "input[type='password']", "textarea"],
+    "select": ["select", "[role='listbox']", "[role='combobox']"],
+    "checkbox": ["input[type='checkbox']", "[role='checkbox']"],
+    "radio": ["input[type='radio']", "[role='radio']"],
+    "link": ["a[href]", "[role='link']"],
+    "modal": ["[role='dialog']", ".modal", "[aria-modal='true']"],
+    "table": ["table", "[role='table']", "[role='grid']"],
+    "row": ["tr", "[role='row']"],
+    "menu": ["[role='menu']", "nav", ".menu"],
+    "tab": ["[role='tab']", ".tab"],
+    "alert": ["[role='alert']", ".alert", ".toast"]
+  },
+  "wait_strategies": {
+    "page_load": "networkidle",
+    "loading_selectors": [
+      ".loading",
+      ".spinner",
+      "[aria-busy='true']",
+      ".skeleton",
+      "[data-loading='true']"
+    ],
+    "default_timeout_ms": 30000
+  },
+  "selector_priority": [
+    "getByRole() - Accessibility roles (most stable)",
+    "getByLabel() - Form labels",
+    "getByPlaceholder() - Input placeholders",
+    "getByText() - Visible text content",
+    "getByTestId() - data-testid attributes",
+    "locator() - CSS selectors (last resort)"
+  ],
+  "code_snippets": {
+    "wait_for_page_load": "await page.waitForLoadState('networkidle');",
+    "wait_for_loading": "await page.locator('.loading, .spinner, [aria-busy=\"true\"]').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});",
+    "click_button": "await page.getByRole('button', { name: '{name}' }).click();",
+    "fill_input": "await page.getByLabel('{label}').fill('{value}');",
+    "select_option": "await page.getByRole('combobox', { name: '{name}' }).selectOption('{value}');",
+    "check_checkbox": "await page.getByRole('checkbox', { name: '{name}' }).check();",
+    "assert_visible": "await expect(page.getByText('{text}')).toBeVisible();",
+    "assert_url": "await expect(page).toHaveURL(/{pattern}/);"
+  },
+  "auth_methods": ["manual", "storage_state", "credentials", "oauth", "basic_auth", "api_token", "none"],
+  "notes": [
+    "This is the default profile for standard web applications",
+    "Uses semantic selectors (role, label, text) for maximum stability",
+    "Compatible with most modern web frameworks",
+    "Shadow DOM is handled automatically by Playwright"
+  ]
+}

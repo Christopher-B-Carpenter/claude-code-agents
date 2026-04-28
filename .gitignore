@@ -1,0 +1,20 @@
+# Local Claude state — not committed
+.agent-state/
+.claude/settings.local.json
+.claude/credentials.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python (for the bundled MCP server, if you build a venv inside the repo)
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Editor
+.vscode/
+.idea/
+*.swp

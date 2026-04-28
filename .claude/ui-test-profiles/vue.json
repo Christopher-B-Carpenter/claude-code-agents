@@ -1,0 +1,88 @@
+{
+  "name": "vue",
+  "description": "Vue.js / Nuxt applications",
+  "selector_patterns": {
+    "button": ["button", "[role='button']", "a.btn", ".v-btn", ".el-button"],
+    "input": ["input", "textarea", ".v-text-field input", ".el-input__inner"],
+    "select": ["select", ".v-select", ".el-select", "[role='listbox']"],
+    "checkbox": ["input[type='checkbox']", ".v-checkbox", ".el-checkbox", "[role='checkbox']"],
+    "radio": [".v-radio", ".el-radio", "input[type='radio']"],
+    "modal": ["[role='dialog']", ".v-dialog", ".el-dialog", ".modal"],
+    "menu": ["[role='menu']", ".v-menu__content", ".el-dropdown-menu"],
+    "tab": ["[role='tab']", ".v-tab", ".el-tabs__item"],
+    "spinner": [".v-progress-circular", ".el-loading-spinner", "[class*='loading']"],
+    "card": [".v-card", ".el-card", ".card"],
+    "snackbar": [".v-snackbar", ".el-message", ".el-notification"],
+    "table": [".v-data-table", ".el-table", "table"]
+  },
+  "wait_strategies": {
+    "page_load": "networkidle",
+    "loading_selectors": [
+      ".v-progress-circular",
+      ".v-skeleton-loader",
+      ".el-loading-mask",
+      ".el-loading-spinner",
+      "[v-loading='true']",
+      "[class*='loading']",
+      "[class*='skeleton']"
+    ],
+    "default_timeout_ms": 30000,
+    "notes": "Nuxt apps need hydration; Vue apps may use v-loading directive"
+  },
+  "selector_priority": [
+    "getByRole() - Semantic accessibility roles",
+    "getByLabel() - Form labels (v-label, el-form-item label)",
+    "getByPlaceholder() - Input placeholders",
+    "getByText() - Visible text content",
+    "getByTestId() - data-testid attribute",
+    "[data-cy='x'] - Cypress test attribute",
+    "[v-model] context - Vue binding hints",
+    "locator() - Component class selectors"
+  ],
+  "code_snippets": {
+    "wait_for_page_load": "await page.waitForLoadState('networkidle');\nawait page.locator('.v-progress-circular, .el-loading-mask, [class*=\"loading\"]').waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});",
+    "click_button": "await page.getByRole('button', { name: '{name}' }).click();",
+    "fill_input": "await page.getByLabel('{label}').fill('{value}');",
+    "fill_vuetify_input": "await page.locator('.v-text-field').filter({ hasText: '{label}' }).locator('input').fill('{value}');",
+    "fill_element_input": "await page.locator('.el-form-item').filter({ hasText: '{label}' }).locator('input').fill('{value}');",
+    "select_vuetify": "await page.locator('.v-select').filter({ hasText: '{label}' }).click();\nawait page.getByRole('option', { name: '{value}' }).click();",
+    "select_element": "await page.locator('.el-select').filter({ hasText: '{label}' }).click();\nawait page.locator('.el-select-dropdown__item').filter({ hasText: '{value}' }).click();",
+    "assert_snackbar": "await expect(page.locator('.v-snackbar, .el-message')).toContainText('{text}');",
+    "wait_for_dialog": "await page.locator('.v-dialog, .el-dialog').waitFor({ state: 'visible' });",
+    "close_dialog": "await page.locator('.v-dialog, .el-dialog').getByRole('button', { name: /close|cancel/i }).click();"
+  },
+  "common_libraries": {
+    "vuetify": {
+      "button": ".v-btn",
+      "input": ".v-text-field input",
+      "select": ".v-select",
+      "checkbox": ".v-checkbox",
+      "dialog": ".v-dialog",
+      "snackbar": ".v-snackbar"
+    },
+    "element-ui": {
+      "button": ".el-button",
+      "input": ".el-input__inner",
+      "select": ".el-select",
+      "checkbox": ".el-checkbox",
+      "dialog": ".el-dialog",
+      "message": ".el-message"
+    },
+    "quasar": {
+      "button": ".q-btn",
+      "input": ".q-field input",
+      "select": ".q-select",
+      "dialog": ".q-dialog",
+      "notify": ".q-notification"
+    }
+  },
+  "auth_methods": ["manual", "storage_state", "credentials", "oauth", "api_token", "none"],
+  "notes": [
+    "Vue components often use scoped slots - structure can vary",
+    "Nuxt apps need hydration before interaction",
+    "Vuetify and Element UI are common component libraries",
+    "v-model bindings create reactive connections - trigger change events",
+    "Use v-loading directive detection for loading states",
+    "Transitions can delay element visibility - wait for animation completion"
+  ]
+}

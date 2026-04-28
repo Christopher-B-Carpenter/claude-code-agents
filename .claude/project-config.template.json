@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Project-specific configuration for agent framework. Copied to .agent-state/ when creating worktrees. CUSTOMIZE THIS FILE FOR YOUR PROJECT.",
+  
+  "repository": {
+    "provider": "bitbucket",
+    "workspace": "YOUR_WORKSPACE",
+    "repo_slug": "YOUR_REPO",
+    "default_branch": "master",
+    "pr_target_branch": "develop"
+  },
+  
+  "jira": {
+    "cloud_id": "YOUR_JIRA_CLOUD_ID",
+    "domain": "YOUR_COMPANY.atlassian.net",
+    "project_key": "YOUR_PROJECT_KEY"
+  },
+  
+  "deployment": {
+    "sandbox_alias": "",
+    "sandbox_name": ""
+  },
+  
+  "team": {
+    "default_reviewer": {
+      "name": "",
+      "account_id": "",
+      "uuid": ""
+    },
+    "developer": {
+      "name": "",
+      "account_id": ""
+    }
+  },
+  
+  "branch_naming": {
+    "feature_prefix": "feature/",
+    "bugfix_prefix": "bugfix/",
+    "hotfix_prefix": "hotfix/",
+    "integration_prefix": "developintegration/"
+  },
+
+  "branching_strategy": {
+    "description": "Defines the promotion path for feature branches and which branch gets code review.",
+    "promotion_path": ["develop", "uat", "master"],
+    "code_review_branch": "develop",
+    "promotion_branches": ["uat", "master"],
+    "notes": "feature branches are created from default_branch. PRs to code_review_branch get full review. PRs to promotion_branches are promotions (already reviewed)."
+  },
+
+  "jira_statuses": {
+    "description": "Maps logical workflow states to your Jira project's actual status names. Agents use these to transition tickets.",
+    "in_progress": "In Progress",
+    "pr_review": "Dev PR Review",
+    "testing": "Testing",
+    "in_uat": "In UAT",
+    "done": "Done"
+  },
+
+  "release": {
+    "version_pattern": "PROJECT YYYY.MM.DD",
+    "notes": "Pattern for Jira fix versions. PROJECT is replaced with jira.project_key. Append .N for multiple releases per day."
+  },
+  
+  "ui_testing": {
+    "description": "Configuration for UI Test agent. Run /ui-test to start setup wizard if not configured.",
+    "base_url": "",
+    "login_url": "",
+    "platform_profile": "generic",
+    "platform_profile_options": ["generic", "react", "angular", "vue", "salesforce-lightning"],
+    "headless": false,
+    "screenshot_on_failure": true,
+    "timeout_ms": 30000,
+    "wait_strategies": {
+      "custom_loading_selector": "",
+      "notes": "Set custom_loading_selector if your app has a unique loading indicator"
+    },
+    "auth": {
+      "method": "manual",
+      "method_options": ["manual", "storage_state", "credentials", "oauth", "basic_auth", "api_token", "sfdx", "none"],
+      "username_env": "TEST_USERNAME",
+      "password_env": "TEST_PASSWORD",
+      "token_env": "API_TOKEN",
+      "storage_state_path": ".agent-state/auth-state.json"
+    }
+  }
+}

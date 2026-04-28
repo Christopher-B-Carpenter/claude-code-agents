@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "MCP servers used by the agent framework. Credentials live in ~/.claude-agents/credentials.env. See README.md for setup.",
+  "required": {
+    "atlassian": {
+      "type": "sse",
+      "url": "https://mcp.atlassian.com/v1/sse",
+      "description": "Jira and Confluence integration. OAuth — authenticates via browser on first use.",
+      "setup": "No credentials needed. First tool call opens an OAuth window."
+    },
+    "bitbucket-extended": {
+      "type": "command",
+      "command": "<venv>/bin/python3",
+      "args": ["./.claude/mcp-servers/bitbucket-extended/main.py"],
+      "description": "Bitbucket PR management, pipelines, and code review.",
+      "setup": "python3 -m venv ~/.claude-agents/venvs/bitbucket-extended && source ~/.claude-agents/venvs/bitbucket-extended/bin/activate && pip install -r .claude/mcp-servers/bitbucket-extended/requirements.txt",
+      "auth_notes": "Bitbucket API tokens use Basic auth with email:token. Set BITBUCKET_API_TOKEN and BITBUCKET_EMAIL in ~/.claude-agents/credentials.env. Falls back to BITBUCKET_USERNAME + BITBUCKET_APP_PASSWORD if no API token. The server reads ~/.claude-agents/credentials.env directly when env vars are not set.",
+      "env_required": {
+        "BITBUCKET_WORKSPACE": "Workspace slug",
+        "BITBUCKET_API_TOKEN": "API token (preferred). Create at: https://bitbucket.org/account/settings/app-passwords/",
+        "BITBUCKET_EMAIL": "Email used with the API token (Basic auth uses email:token)",
+        "BITBUCKET_USERNAME": "Username (display/fallback only)",
+        "BITBUCKET_APP_PASSWORD": "Legacy app password (fallback if no API token)"
+      },
+      "permissions": ["Repositories: Read/Write", "Pull requests: Read/Write", "Pipelines: Read"]
+    }
+  },
+  "optional": {
+    "playwright": {
+      "type": "command",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "description": "Browser automation for UI testing. Required for /ui-test agent.",
+      "setup": "npx playwright install chromium"
+    },
+    "aws_bedrock": {
+      "type": "env",
+      "description": "Optional: route Claude Code through AWS Bedrock instead of Anthropic's API.",
+      "env_required": {
+        "CLAUDE_CODE_USE_BEDROCK": "Set to 1 to enable Bedrock",
+        "AWS_PROFILE": "SSO profile name from ~/.aws/config",
+        "AWS_REGION": "AWS region (e.g., us-east-1)",
+        "ANTHROPIC_MODEL": "Inference profile ARN for the model"
+      },
+      "env_optional": {
+        "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "Recommended: 4096",
+        "MAX_THINKING_TOKENS": "Recommended: 1024"
+      },
+      "notes": "SSO credentials typically expire after 12 hours. Run 'aws sso login --profile <profile>' to refresh. Claude Code will call awsAuthRefresh automatically on expiry if configured."
+    }
+  }
+}

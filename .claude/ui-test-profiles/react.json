@@ -1,0 +1,79 @@
+{
+  "name": "react",
+  "description": "React / Next.js applications",
+  "selector_patterns": {
+    "button": ["button", "[role='button']", "a.btn", ".button"],
+    "input": ["input", "textarea", "[contenteditable='true']"],
+    "select": ["select", "[role='listbox']", "[role='combobox']", ".react-select"],
+    "checkbox": ["input[type='checkbox']", "[role='checkbox']"],
+    "modal": ["[role='dialog']", "[data-reach-dialog-content]", ".ReactModal__Content", "[class*='modal']"],
+    "dropdown": [".dropdown-menu", "[role='menu']", "[class*='dropdown']"],
+    "toast": ["[class*='toast']", "[class*='notification']", "[role='alert']"],
+    "spinner": ["[class*='spinner']", "[class*='loading']", "[class*='skeleton']"],
+    "card": ["[class*='card']", "article"],
+    "form": ["form", "[role='form']"]
+  },
+  "wait_strategies": {
+    "page_load": "networkidle",
+    "loading_selectors": [
+      "[class*='loading']",
+      "[class*='spinner']",
+      "[class*='skeleton']",
+      "[aria-busy='true']",
+      ".suspense-fallback"
+    ],
+    "default_timeout_ms": 30000,
+    "notes": "React apps may use Suspense for lazy loading"
+  },
+  "selector_priority": [
+    "getByRole() - Semantic roles",
+    "getByLabelText() - Form labels",
+    "getByPlaceholderText() - Input placeholders",
+    "getByText() - Visible text",
+    "getByTestId() - data-testid (common in React)",
+    "[data-cy='x'] - Cypress test attributes",
+    "[class*='ComponentName'] - Styled-components pattern"
+  ],
+  "code_snippets": {
+    "wait_for_page_load": "await page.waitForLoadState('networkidle');\nawait page.locator('[class*=\"loading\"], [class*=\"spinner\"]').waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});",
+    "click_button": "await page.getByRole('button', { name: '{name}' }).click();",
+    "fill_input": "await page.getByLabel('{label}').fill('{value}');",
+    "fill_by_placeholder": "await page.getByPlaceholder('{placeholder}').fill('{value}');",
+    "select_react_select": "await page.locator('.react-select').click();\nawait page.getByRole('option', { name: '{value}' }).click();",
+    "assert_visible": "await expect(page.getByText('{text}')).toBeVisible();",
+    "wait_for_hydration": "await page.waitForFunction(() => document.querySelector('[data-hydrated=\"true\"]') !== null);",
+    "close_modal": "await page.getByRole('button', { name: /close|dismiss|cancel/i }).click();"
+  },
+  "common_libraries": {
+    "react-select": {
+      "open": ".react-select__control",
+      "option": ".react-select__option",
+      "selected": ".react-select__single-value"
+    },
+    "material-ui": {
+      "button": ".MuiButton-root",
+      "input": ".MuiInputBase-input",
+      "select": ".MuiSelect-select",
+      "modal": ".MuiModal-root"
+    },
+    "ant-design": {
+      "button": ".ant-btn",
+      "input": ".ant-input",
+      "select": ".ant-select",
+      "modal": ".ant-modal"
+    },
+    "chakra-ui": {
+      "button": "[class*='chakra-button']",
+      "input": "[class*='chakra-input']",
+      "modal": "[class*='chakra-modal']"
+    }
+  },
+  "auth_methods": ["manual", "storage_state", "credentials", "oauth", "api_token", "none"],
+  "notes": [
+    "React apps re-render frequently - wait for DOM stability",
+    "Next.js apps need hydration to complete before interaction",
+    "CSS-in-JS libraries generate dynamic class names - avoid class-based selectors",
+    "Prefer data-testid attributes when available",
+    "Watch for portals - modals may render outside main component tree"
+  ]
+}

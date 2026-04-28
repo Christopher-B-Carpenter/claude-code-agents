@@ -1,0 +1,97 @@
+{
+  "name": "salesforce-lightning",
+  "description": "Salesforce Lightning Experience - LWC and Aura components",
+  "selector_patterns": {
+    "button": ["lightning-button", "lightning-button-icon", "button.slds-button"],
+    "input": ["lightning-input input", "lightning-textarea textarea", "lightning-input-field input"],
+    "combobox": ["lightning-combobox", "lightning-picklist"],
+    "lookup": ["lightning-lookup", "lightning-input-field[data-field-type='Lookup']"],
+    "checkbox": ["lightning-input[type='checkbox']", "lightning-primitive-input-checkbox"],
+    "datatable": ["lightning-datatable"],
+    "modal": ["section.slds-modal", "lightning-modal"],
+    "toast": ["lightning-notification-bubble", ".slds-notify--toast"],
+    "spinner": ["lightning-spinner", ".slds-spinner"],
+    "card": ["lightning-card", ".slds-card"],
+    "tab": ["lightning-tabset lightning-tab", ".slds-tabs_default__item"],
+    "record_form": ["lightning-record-edit-form", "lightning-record-view-form"],
+    "pill": ["lightning-pill", ".slds-pill"]
+  },
+  "wait_strategies": {
+    "page_load": "networkidle",
+    "loading_selectors": [
+      "lightning-spinner",
+      ".slds-spinner",
+      ".slds-spinner_container",
+      "[data-aura-rendered-by] .loading"
+    ],
+    "default_timeout_ms": 60000,
+    "notes": "Salesforce pages can be slow to load; use longer timeouts"
+  },
+  "selector_priority": [
+    "getByRole() - Works through shadow DOM",
+    "lightning-* element + descendant - Component-specific",
+    "getByLabel() - Form field labels",
+    "getByText() - Visible button/link text",
+    "[field-name='X'] - Record form fields",
+    "locator() with >> for shadow piercing"
+  ],
+  "code_snippets": {
+    "wait_for_page_load": "await page.waitForLoadState('networkidle');\nawait page.locator('lightning-spinner').waitFor({ state: 'hidden', timeout: 60000 }).catch(() => {});",
+    "fill_input": "await page.locator('lightning-input-field[field-name=\"{field}\"] input').fill('{value}');",
+    "fill_textarea": "await page.locator('lightning-textarea[field-name=\"{field}\"] textarea').fill('{value}');",
+    "select_picklist": "await page.locator('lightning-combobox[field-name=\"{field}\"]').click();\nawait page.getByRole('option', { name: '{value}' }).click();",
+    "select_lookup": "await page.locator('lightning-lookup[field-name=\"{field}\"] input').fill('{search}');\nawait page.getByRole('option', { name: '{value}' }).click();",
+    "click_button": "await page.getByRole('button', { name: '{name}' }).click();",
+    "click_tab": "await page.locator('lightning-tab-bar').getByText('{name}').click();",
+    "assert_toast": "await expect(page.locator('lightning-notification-bubble')).toContainText('{text}');",
+    "wait_for_modal": "await page.locator('section.slds-modal').waitFor({ state: 'visible' });",
+    "close_modal": "await page.locator('section.slds-modal button[title=\"Close\"]').click();",
+    "datatable_row": "await page.locator('lightning-datatable').getByRole('row').nth({index});"
+  },
+  "shadow_dom_notes": [
+    "Lightning Web Components use shadow DOM extensively",
+    "Playwright automatically pierces shadow DOM with standard selectors",
+    "Use >> operator for explicit shadow piercing: lightning-button >> button",
+    "Prefer semantic selectors (getByRole, getByLabel) which work through shadow DOM"
+  ],
+  "auth_methods": ["sfdx", "credentials", "storage_state", "manual"],
+  "sfdx_auth": {
+    "description": "Use Salesforce CLI for authentication",
+    "login_command": "sf org login web -a {alias}",
+    "check_command": "sf org display -o {alias} --json",
+    "get_url_command": "sf org open -o {alias} --url-only"
+  },
+  "url_patterns": {
+    "sandbox": "https://{org}--{sandbox}.sandbox.lightning.force.com",
+    "production": "https://{org}.lightning.force.com",
+    "scratch": "https://{instance}.scratch.lightning.force.com",
+    "login_sandbox": "https://{org}--{sandbox}.sandbox.my.salesforce.com",
+    "login_prod": "https://login.salesforce.com"
+  },
+  "directory_strategy": {
+    "description": "Salesforce projects use sfdx package directories (e.g. force-app, caseManagementApp). Tests live inside the app package but outside the deployed main/default/ path so sf project deploy never touches them.",
+    "test_dir": "caseManagementApp/playwright-tests",
+    "spec_dir": "caseManagementApp/playwright-tests/tests",
+    "helpers_dir": "caseManagementApp/playwright-tests/tests/helpers",
+    "fixtures_dir": "caseManagementApp/playwright-tests/fixtures",
+    "config_dir": "caseManagementApp/playwright-tests",
+    "package_json": "caseManagementApp/playwright-tests/package.json",
+    "playwright_config": "caseManagementApp/playwright-tests/playwright.config.ts",
+    "run_command": "cd caseManagementApp/playwright-tests && npx playwright test",
+    "install_command": "cd caseManagementApp/playwright-tests && npm install && npx playwright install chromium",
+    "notes": [
+      "Tests are scoped per sfdx package directory, not at repo root",
+      "main/default/ contains deployed Salesforce metadata - never put tests there",
+      "playwright-tests/ is gitignored from sfdx deployment via .forceignore",
+      "Each app package can have its own playwright-tests/ directory",
+      "npm scripts in package.json provide convenient test execution shortcuts"
+    ]
+  },
+  "notes": [
+    "Salesforce pages have complex async loading - always wait for spinners",
+    "Record pages may take 5-10 seconds to fully load",
+    "Use longer timeouts (60s) for initial page loads",
+    "Toast messages auto-dismiss - capture assertions quickly",
+    "Lightning components re-render frequently - wait for stability"
+  ]
+}

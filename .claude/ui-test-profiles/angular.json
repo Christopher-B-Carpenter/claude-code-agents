@@ -1,0 +1,68 @@
+{
+  "name": "angular",
+  "description": "Angular applications (2+)",
+  "selector_patterns": {
+    "button": ["button", "[role='button']", "a.btn", "mat-button", "mat-raised-button"],
+    "input": ["input", "textarea", "mat-input", "[matInput]"],
+    "select": ["mat-select", "select", "[role='listbox']"],
+    "checkbox": ["mat-checkbox", "input[type='checkbox']", "[role='checkbox']"],
+    "radio": ["mat-radio-button", "input[type='radio']"],
+    "modal": ["mat-dialog-container", "[role='dialog']", ".modal", "cdk-dialog-container"],
+    "menu": ["mat-menu", "[role='menu']", ".dropdown-menu"],
+    "tab": ["mat-tab", "[role='tab']", ".nav-tabs .nav-link"],
+    "spinner": ["mat-spinner", "mat-progress-spinner", ".loading", "[class*='spinner']"],
+    "card": ["mat-card", ".card"],
+    "snackbar": ["mat-snack-bar-container", "simple-snack-bar"],
+    "table": ["mat-table", "table", "[role='grid']"],
+    "form_field": ["mat-form-field"]
+  },
+  "wait_strategies": {
+    "page_load": "networkidle",
+    "loading_selectors": [
+      "mat-spinner",
+      "mat-progress-spinner",
+      "mat-progress-bar[mode='indeterminate']",
+      ".cdk-overlay-backdrop",
+      "[class*='loading']",
+      "[class*='spinner']"
+    ],
+    "default_timeout_ms": 30000,
+    "notes": "Angular Material uses overlays for modals and menus"
+  },
+  "selector_priority": [
+    "getByRole() - Semantic accessibility roles",
+    "getByLabel() - Form field labels (mat-label)",
+    "getByPlaceholder() - Input placeholders",
+    "getByText() - Visible text content",
+    "getByTestId() - data-testid or data-cy attributes",
+    "[formControlName='x'] - Reactive form controls",
+    "locator() - Component tag selectors"
+  ],
+  "code_snippets": {
+    "wait_for_page_load": "await page.waitForLoadState('networkidle');\nawait page.locator('mat-spinner, mat-progress-spinner').waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});",
+    "click_button": "await page.getByRole('button', { name: '{name}' }).click();",
+    "fill_input": "await page.getByLabel('{label}').fill('{value}');",
+    "fill_mat_input": "await page.locator('mat-form-field').filter({ hasText: '{label}' }).locator('input').fill('{value}');",
+    "select_mat_select": "await page.locator('mat-select').filter({ hasText: '{label}' }).click();\nawait page.getByRole('option', { name: '{value}' }).click();",
+    "check_mat_checkbox": "await page.locator('mat-checkbox').filter({ hasText: '{label}' }).click();",
+    "click_mat_tab": "await page.getByRole('tab', { name: '{name}' }).click();",
+    "assert_snackbar": "await expect(page.locator('mat-snack-bar-container')).toContainText('{text}');",
+    "wait_for_dialog": "await page.locator('mat-dialog-container').waitFor({ state: 'visible' });",
+    "close_dialog": "await page.locator('mat-dialog-container').getByRole('button', { name: /close|cancel|dismiss/i }).click();"
+  },
+  "angular_material_patterns": {
+    "form_field_input": "mat-form-field:has-text('{label}') input",
+    "form_field_select": "mat-form-field:has-text('{label}') mat-select",
+    "overlay_panel": ".cdk-overlay-pane",
+    "autocomplete_option": "mat-option",
+    "menu_item": "mat-menu button[mat-menu-item]"
+  },
+  "auth_methods": ["manual", "storage_state", "credentials", "oauth", "api_token", "none"],
+  "notes": [
+    "Angular Material components use CDK overlay for dropdowns, menus, dialogs",
+    "Overlay elements render in document body, not in component tree",
+    "mat-form-field wraps inputs - locate by label text then find nested input",
+    "Zone.js manages change detection - wait for stability after interactions",
+    "Use formControlName attribute to identify reactive form controls"
+  ]
+}
