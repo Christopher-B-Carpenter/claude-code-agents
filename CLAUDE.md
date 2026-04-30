@@ -7,10 +7,10 @@ A multi-agent system for Claude Code with branch/worktree management.
 ## Quick Start
 
 ```bash
-cd ~/src/your-repo    # On master/main
+cd ~/your-repo    # On master/main
 claude
 /pm                   # PM detects master, offers branch setup
-> "new CRM-1234"      # Creates branch + worktree
+> "new XXX-1234"      # Creates branch + worktree
 # Follow instructions to cd to worktree
 ```
 
@@ -20,9 +20,9 @@ claude
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│  ~/src/sfdc/ (master)                                               │
+│  ~/ (master)                                               │
 │    │                                                                │
-│    ├── /pm "new CRM-1234"                                           │
+│    ├── /pm "new XXX-1234"                                           │
 │    │     └── Creates: feature/XXX-1234 branch                       │
 │    │     └── Creates: ../xxxx/ worktree            │
 │    │     └── Copies: .claude/ commands                              │
@@ -35,7 +35,7 @@ claude
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│  ~/src/sfdc-feature-CRM-1234/ (worktree)                            │
+│  ~/feature-XXX-1234/ (worktree)                            │
 │    │                                                                │
 │    ├── /pm      → Describe ticket, plan work                        │
 │    ├── /dev     → Implement changes                                 │
