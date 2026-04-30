@@ -23,14 +23,14 @@ claude
 │  ~/src/sfdc/ (master)                                               │
 │    │                                                                │
 │    ├── /pm "new CRM-1234"                                           │
-│    │     └── Creates: feature/CRM-1234 branch                       │
-│    │     └── Creates: ../sfdc-feature-CRM-1234/ worktree            │
+│    │     └── Creates: feature/XXX-1234 branch                       │
+│    │     └── Creates: ../xxxx/ worktree            │
 │    │     └── Copies: .claude/ commands                              │
-│    │     └── Says: "cd ../sfdc-feature-CRM-1234 && claude"          │
+│    │     └── Says: "cd ../xxxx && claude"          │
 │    │                                                                │
-│    └── /pm "continue feature/CRM-9999"                              │
+│    └── /pm "continue feature/XXX-9999"                              │
 │          └── Creates worktree for existing branch                   │
-│          └── Says: "cd ../sfdc-feature-CRM-9999 && claude"          │
+│          └── Says: "cd ../xxxx && claude"          │
 └─────────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -67,7 +67,7 @@ claude
 
 | Command | Action |
 |---------|--------|
-| `new [TICKET]` | Create branch + worktree, e.g. `new CRM-1234` |
+| `new [TICKET]` | Create branch + worktree, e.g. `new XXX-1234` |
 | `continue [BRANCH]` | Create worktree for existing branch |
 | `list` | Show all branches and worktrees |
 | `cleanup [BRANCH]` | Remove worktree and delete branch (if merged) |
@@ -103,16 +103,16 @@ Each agent shows **project name AND branch**:
 ```
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃  🔧  DEVELOPER AGENT                                               ┃
-┃      sfdc-feature-CRM-1234 (feature/CRM-1234)                      ┃
+┃      XXXX (feature/XXX-1234)                      ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 ⚠️  Git: 3 uncommitted changes
- M force-app/main/default/objects/Account/...
+ M XX...
 ```
 
 **On master:**
 ```
-┃      sfdc (master) ⚠️  PROTECTED                                   ┃
+┃      branch (master) ⚠️  PROTECTED                                   ┃
 ```
 
 ---
@@ -132,11 +132,11 @@ All agents check git status:
 
 ```
 ~/src/
-├── sfdc/                           # Master - stays clean
+├── main/                           # Master - stays clean
 │   ├── .claude/commands/           # Agent commands (template)
 │   └── (no .agent-state/)          # No work done here
 │
-├── sfdc-feature-CRM-1234/          # Worktree for ticket
+├── feature/          # Worktree for ticket
 │   ├── .claude/commands/           # Copied from master
 │   ├── .agent-state/               # Isolated state
 │   │   ├── project.md              # Ticket description
@@ -147,11 +147,11 @@ All agents check git status:
 │   │   ├── sec-status.md           # Security findings
 │   │   ├── test-status.md
 │   │   └── activity.log
-│   └── (feature/CRM-1234 branch)
+│   └── (feature/XXX-1234 branch)
 │
-└── sfdc-feature-CRM-5678/          # Another ticket (parallel)
+└── feature/          # Another ticket (parallel)
     ├── .agent-state/               # Separate state
-    └── (feature/CRM-5678 branch)
+    └── (feature/XXX-5678 branch)
 ```
 
 ---
@@ -160,25 +160,25 @@ All agents check git status:
 
 ```bash
 # 1. Start from master
-cd ~/src/sfdc
+cd ~/
 claude
 /pm
 
 # PM shows: "You're on master - this branch should stay clean"
 # PM shows existing worktrees and branches
 
-> "new CRM-1234"
+> "new XXX-1234"
 
 # PM creates branch + worktree
-# PM says: "cd ../sfdc-feature-CRM-1234 && claude"
+# PM says: "cd ../feature-XXX-1234 && claude"
 
 # 2. Work in worktree
-cd ../sfdc-feature-CRM-1234
+cd ../feature-XXX-1234
 claude
 /pm
 
 # PM asks for ticket details
-> "CRM-1234: Add validation rule for Opportunity stage changes..."
+> "XXX-1234: Add validation rule for Opportunity stage changes..."
 
 # PM creates project.md and plan.md
 
@@ -199,13 +199,13 @@ claude
 
 # 3. Commit and PR (you do this)
 git add -A
-git commit -m "CRM-1234: Add stage change validation"
-git push origin feature/CRM-1234
+git commit -m "XXX-1234: Add stage change validation"
+git push origin feature/XXX-1234
 
 # 4. Cleanup after merge
 cd ~/src/sfdc
 /pm
-> "cleanup feature/CRM-1234"
+> "cleanup feature/XXX-1234"
 
 # PM removes worktree and branch
 ```
@@ -228,16 +228,16 @@ Run multiple tickets simultaneously:
 
 **Terminal 1:**
 ```bash
-cd ~/src/sfdc-feature-CRM-1234
+cd ~/src/feature-XXX-1234
 claude
-/dev   # Shows: sfdc-feature-CRM-1234 (feature/CRM-1234)
+/dev   # Shows: feature-XXX-1234 (feature/XXX-1234)
 ```
 
 **Terminal 2:**
 ```bash
-cd ~/src/sfdc-feature-CRM-5678
+cd ~/feature-XXX-5678
 claude
-/dev   # Shows: sfdc-feature-CRM-5678 (feature/CRM-5678)
+/dev   # Shows: feature-XXX-5678 (feature/XXX-5678)
 ```
 
 Each worktree has isolated state - no conflicts.
@@ -249,7 +249,7 @@ Each worktree has isolated state - no conflicts.
 Copy to your repository's master branch:
 
 ```bash
-cd ~/src/your-repo
+cd ~/your-repo
 git checkout master
 cp -r /path/to/claude-agents/.claude .
 cp /path/to/claude-agents/CLAUDE.md .
